@@ -23,6 +23,8 @@
 #include "termwidget.h"
 #include "terminalconfig.h"
 #include "dbusaddressable.h"
+
+class ExplorerListWidget;
 class QSplitter;
 
 
@@ -92,6 +94,7 @@ class TermWidgetHolder : public QWidget
         QString m_wdir;
         QString m_shell;
         TermWidget * m_currentTerm;
+        ExplorerListWidget *m_explorer;
 
         void split(TermWidget * term, Qt::Orientation orientation);
         TermWidget * newTerm(TerminalConfig &cfg);

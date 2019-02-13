@@ -54,16 +54,16 @@ TermWidgetHolder::TermWidgetHolder(TerminalConfig &config, QWidget * parent)
 
     QSplitter *s = new QSplitter(this);
     s->setFocusPolicy(Qt::NoFocus);
+
+    m_explorer = new ExplorerListWidget(*this);
     TermWidget *w = newTerm(config);
-    ExplorerListWidget *explorer = new ExplorerListWidget(*this);
-    s->addWidget(explorer);
+
+    s->addWidget(m_explorer);
     s->addWidget(w);
     lay->addWidget(s);
     m_currentTerm = w;
 
     setLayout(lay);
-
-    explorer->setCurrentDirectory();
 }
 
 TermWidgetHolder::~TermWidgetHolder()
@@ -378,6 +378,11 @@ TermWidget *TermWidgetHolder::newTerm(TerminalConfig &cfg)
     connect(w, &TermWidget::splitCollapse, this, &TermWidgetHolder::splitCollapse);
     connect(w, &TermWidget::termGetFocus, this, &TermWidgetHolder::setCurrentTerminal);
     connect(w, &TermWidget::termTitleChanged, this, &TermWidgetHolder::onTermTitleChanged);
+
+    connect(w->impl(), &QTermWidget::receivedData,
+            m_explorer, &ExplorerListWidget::updateCurrentDirectory);
+    connect(w, &TermWidget::termGetFocus,
+            m_explorer, &ExplorerListWidget::updateCurrentDirectory);
 
     return w;
 }
