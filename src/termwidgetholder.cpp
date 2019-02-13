@@ -19,6 +19,7 @@
 #include <QGridLayout>
 #include <QSplitter>
 #include <QInputDialog>
+#include <QListWidget>
 
 #ifdef HAVE_QDBUS
     #include <QtDBus/QtDBus>
@@ -30,6 +31,7 @@
 #include "termwidgetholder.h"
 #include "termwidget.h"
 #include "properties.h"
+#include "explorerlistwidget.h"
 #include <assert.h>
 #include <climits>
 #include <algorithm>
@@ -53,11 +55,15 @@ TermWidgetHolder::TermWidgetHolder(TerminalConfig &config, QWidget * parent)
     QSplitter *s = new QSplitter(this);
     s->setFocusPolicy(Qt::NoFocus);
     TermWidget *w = newTerm(config);
+    ExplorerListWidget *explorer = new ExplorerListWidget(*this);
+    s->addWidget(explorer);
     s->addWidget(w);
     lay->addWidget(s);
     m_currentTerm = w;
 
     setLayout(lay);
+
+    explorer->setCurrentDirectory();
 }
 
 TermWidgetHolder::~TermWidgetHolder()
@@ -67,7 +73,7 @@ TermWidgetHolder::~TermWidgetHolder()
 void TermWidgetHolder::setInitialFocus()
 {
     QList<TermWidget*> list = findChildren<TermWidget*>();
-    TermWidget * w = list.count() == 0 ? 0 : list.at(0);
+    TermWidget * w = list.count() == 0 ? nullptr : list.at(0);
     if (w)
         w->setFocus(Qt::OtherFocusReason);
 }
@@ -231,7 +237,7 @@ void TermWidgetHolder::directionalNavigation(NavigationDirection dir) {
     l = findChildren<TermWidget*>();
     int lowestX = INT_MAX;
     int lowestMidpointDistance = INT_MAX;
-    TermWidget *fittest = NULL;
+    TermWidget *fittest = nullptr;
     for (TermWidget * w : qAsConst(l))
     {
         NavigationData contenderDims = getNormalizedDimensions(w, dir);
@@ -250,7 +256,7 @@ void TermWidgetHolder::directionalNavigation(NavigationDirection dir) {
             fittest = w;
         }
     }
-    if (fittest != NULL) {
+    if (fittest != nullptr) {
         fittest->impl()->setFocus(Qt::OtherFocusReason);
     }
 }
@@ -283,10 +289,10 @@ void TermWidgetHolder::splitCollapse(TermWidget * term)
 {
     QSplitter * parent = qobject_cast<QSplitter*>(term->parent());
     assert(parent);
-    term->setParent(0);
+    term->setParent(nullptr);
     delete term;
 
-    QWidget *nextFocus = Q_NULLPTR;
+    QWidget *nextFocus = nullptr;
 
     // Collapse splitters containing a single element, excluding the top one.
     if (parent->count() == 1)
@@ -305,7 +311,7 @@ void TermWidgetHolder::splitCollapse(TermWidget * term)
             {
                 nextFocus = singleHeir->findChild<TermWidget*>();
             }
-            parent->setParent(0);
+            parent->setParent(nullptr);
             delete parent;
             // Make sure there's no access to the removed parent
             parent = uselessSplitterParent;
@@ -414,7 +420,7 @@ void TermWidgetHolder::onTermTitleChanged(QString title, QString icon) const
 
 QDBusObjectPath TermWidgetHolder::getActiveTerminal()
 {
-    if (m_currentTerm != NULL)
+    if (m_currentTerm != nullptr)
     {
         return m_currentTerm->getDbusPath();
     }

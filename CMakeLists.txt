@@ -68,6 +68,8 @@ set(QTERM_SRC
     src/fontdialog.cpp
     src/dbusaddressable.cpp
     src/tab-switcher.cpp
+    src/explorerlistwidget.cpp
+    src/explorerlistitem.cpp
 )
 
 set(QTERM_MOC_SRC
@@ -81,6 +83,8 @@ set(QTERM_MOC_SRC
     src/bookmarkswidget.h
     src/fontdialog.h
     src/tab-switcher.h
+    src/explorerlistwidget.h
+    src/explorerlistitem.h
 )
 
 if (Qt5DBus_FOUND)
@@ -180,7 +184,7 @@ add_executable(${EXE_NAME} ${GUI_TYPE}
 target_compile_definitions(${EXE_NAME}
     PRIVATE
         "QT_USE_QSTRINGBUILDER"
-        "QT_NO_CAST_FROM_ASCII"
+        #"QT_NO_CAST_FROM_ASCII"
         "QT_NO_CAST_TO_ASCII"
         "QT_NO_URL_CAST_FROM_STRING"
         "QT_NO_CAST_FROM_BYTEARRAY"

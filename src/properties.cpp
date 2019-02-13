@@ -166,7 +166,7 @@ void Properties::saveSettings()
 
     m_settings->beginGroup(QLatin1String("Shortcuts"));
     MainWindow *mainWindow = QTerminalApp::Instance()->getWindowList()[0];
-    assert(mainWindow != NULL);
+    assert(mainWindow != nullptr);
 
     QMapIterator< QString, QAction * > it(mainWindow->leaseActions());
     while( it.hasNext() )

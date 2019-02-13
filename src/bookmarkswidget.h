@@ -30,7 +30,7 @@ class BookmarksWidget : public QWidget, Ui::BookmarksWidget
     Q_OBJECT
 
 public:
-    BookmarksWidget(QWidget *parent=NULL);
+    BookmarksWidget(QWidget *parent=nullptr);
     ~BookmarksWidget();
 
     void setup();
